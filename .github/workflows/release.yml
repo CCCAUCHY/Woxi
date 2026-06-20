@@ -6,7 +6,7 @@ on:
       - "v*"
 
 permissions:
-  contents: write   # 👈 关键就在这里！
+  contents: write
 
 jobs:
   release:
@@ -24,9 +24,10 @@ jobs:
         mkdir dist
         cp target/release/* dist/
 
-    - name: Upload Release
+    - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
+        tag_name: ${{ github.ref_name }}
         files: dist/*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
