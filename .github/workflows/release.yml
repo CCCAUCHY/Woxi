@@ -5,6 +5,9 @@ on:
     tags:
       - "v*"
 
+permissions:
+  contents: write   # 👈 关键就在这里！
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -13,14 +16,17 @@ jobs:
     - uses: actions/checkout@v4
     - uses: dtolnay/rust-toolchain@stable
 
-    - run: cargo build --release
+    - name: Build
+      run: cargo build --release
 
-    - run: |
+    - name: Package
+      run: |
         mkdir dist
-        cp target/release/woxi dist/woxi-linux
+        cp target/release/* dist/
 
-    - uses: softprops/action-gh-release@v2
+    - name: Upload Release
+      uses: softprops/action-gh-release@v2
       with:
-        files: dist/woxi-linux
+        files: dist/*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
